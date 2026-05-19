@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CallGuard Demo - Tradie Connect AI</title>
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f5f5; }
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.demo-wrapper {
+  width: 100%;
+  max-width: 420px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #1B3A6B;
+}
+
+.header h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.header p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.phone-frame {
+  width: 100%;
+  background: #1B3A6B;
+  border-radius: 40px;
+  padding: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  aspect-ratio: 9/16;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 35px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.call-status {
+  background: linear-gradient(135deg, #1B3A6B 0%, #0C2847 100%);
+  color: white;
+  padding: 20px 16px;
+  text-align: center;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.incoming-call {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background: white;
+}
+
+.caller-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1B3A6B;
+  margin-bottom: 8px;
+}
+
+.caller-number {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 20px;
+  font-family: monospace;
+}
+
+.call-type {
+  display: inline-block;
+  background: #E8750A;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.accept-button {
+  padding: 14px 40px;
+  background: #0F6E56;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: background 0.2s;
+}
+
+.accept-button:hover {
+  background: #085041;
+}
+
+.decline-button {
+  padding: 12px 40px;
+  background: transparent;
+  color: #E24B4A;
+  border: 1px solid #E24B4A;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.decline-button:hover {
+  background: rgba(226, 75, 74, 0.05);
+}
+
+.conversation {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fafafa;
+}
+
+.message {
+  display: flex;
+  gap: 8px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message.bot {
+  justify-content: flex-start;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.bot .message-bubble {
+  background: white;
+  color: #333;
+  border: 1px solid #e0e0e0;
+}
+
+.user .message-bubble {
+  background: #1B3A6B;
+  color: white;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  height: 18px;
+}
+
+.typing-dot {
+  width: 5px;
+  height: 5px;
+  background: #1B3A6B;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { opacity: 0.4; }
+  30% { opacity: 1; }
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  margin: 12px 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+}
+
+.control-button {
+  flex: 1;
+  padding: 10px 12px;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #333;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.control-button:hover {
+  background: #f5f5f5;
+  border-color: #E8750A;
+  color: #E8750A;
+}
+
+.control-button.active {
+  background: #E8750A;
+  color: white;
+  border-color: #E8750A;
+}
+
+.hidden-features {
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  padding: 12px;
+  border-top: 1px solid #e0e0e0;
+  background: #f9f9f9;
+}
+
+.hidden-features strong {
+  color: #E8750A;
+}
+
+.footer-text {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 12px;
+  color: #999;
+}
+
+.footer-text a {
+  color: #E8750A;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="demo-wrapper">
+    <div class="header">
+      <h1>CallGuard Demo</h1>
+      <p>See how we capture every call</p>
+    </div>
+
+    <div class="phone-frame">
+      <div class="phone-screen" id="screen">
+        
+        <div class="call-status" id="callStatus">
+          <div style="font-size: 11px; opacity: 0.8; margin-bottom: 4px;">CallGuard Active</div>
+          <div style="font-size: 13px; font-weight: 600;">Incoming Call</div>
+        </div>
+
+        <div class="incoming-call" id="incomingCallView">
+          <div class="caller-name">Unknown Caller</div>
+          <div class="caller-number">+61 412 345 678</div>
+          <div class="call-type">🔧 Maintenance Call</div>
+          <p style="font-size: 12px; color: #999; margin: 16px 0;">CallGuard is answering this call...</p>
+          <button class="accept-button" onclick="skipToConversation()">See What Gets Captured</button>
+          <button class="decline-button" onclick="resetDemo()">Start Over</button>
+        </div>
+
+        <div class="conversation" id="conversationView" style="display: none;">
+          <div class="section-title">Live Conversation</div>
+          <div id="messages"></div>
+        </div>
+
+        <div class="controls" id="controls" style="display: none;">
+          <button class="control-button active" onclick="showScenario('routine')">Routine Job</button>
+          <button class="control-button" onclick="showScenario('emergency')">Emergency</button>
+          <button class="control-button" onclick="showScenario('demo')">See More</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-text">
+      Want to see this in action for your business?<br>
+      <a href="mailto:jeanine@tradieconnectai.com.au">Get a live demo</a>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentScenario = 'routine';
+
+const scenarios = {
+  routine: {
+    caller: "Sarah Mitchell",
+    number: "+61 412 345 678",
+    type: "Maintenance Call",
+    exchanges: [
+      { bot: "Hi Sarah, thanks for calling. I'm CallGuard, your AI receptionist. Just a quick question — are you calling about a <strong>maintenance issue</strong>, an <strong>emergency</strong>, or something else?" },
+      { user: "Yeah, my kitchen tap has a slow leak." },
+      { bot: "Got it — a <strong>slow leak on your kitchen tap.</strong> Where are you located? Just give me a suburb." },
+      { user: "Klemzig, 5087" },
+      { bot: "Perfect. And what's the <strong>best number to reach you</strong> when the plumber calls back?" },
+      { user: "0412 345 678" },
+      { bot: "Great. Is there anything else I should know — <strong>any access issues</strong>, pets, or special instructions?" },
+      { user: "Nope, pretty straightforward." },
+      { captured: true, summary: "✓ <strong>Job Captured</strong><br>📍 Location: Klemzig, 5087<br>🔧 Issue: Kitchen tap slow leak<br>📞 Contact: 0412 345 678<br>⏱️ Priority: Routine<br><br>CallGuard just handled intake in <strong>60 seconds.</strong> The plumber gets all the details they need — no callbacks asking 'where did you say you were?'" }
+    ]
+  },
+  emergency: {
+    caller: "John Davidson",
+    number: "+61 418 987 654",
+    type: "🚨 Emergency",
+    exchanges: [
+      { bot: "Hi there, I'm CallGuard. Are you calling about an <strong>emergency</strong>?" },
+      { user: "Yes! My bathroom is flooding. Burst pipe under the house." },
+      { bot: "<strong>Got it — burst pipe.</strong> That's urgent. What's your address?" },
+      { user: "42 Main Street, Mawson Lakes" },
+      { bot: "Mawson Lakes — noted. <strong>Is the water currently running?</strong> Are you safe?" },
+      { user: "Yeah, I've turned the main tap off. But there's water everywhere." },
+      { bot: "Smart move. A plumber is on the way. You'll get a call within <strong>30 minutes</strong> with their ETA. Your reference is <strong>#BURST-042-ML.</strong>" },
+      { captured: true, summary: "🚨 <strong>Emergency Triaged</strong><br>📍 Location: 42 Main Street, Mawson Lakes<br>💧 Issue: Burst pipe under house<br>⚠️ Priority: <strong>URGENT</strong><br>📞 Caller: John Davidson<br><br>CallGuard flagged this as <strong>emergency</strong> and prioritized dispatch. No waiting on hold. No explaining the problem twice." }
+    ]
+  },
+  demo: {
+    caller: "Future Client",
+    number: "Your Phone",
+    type: "💡 What Else?",
+    exchanges: [
+      { bot: "You're seeing the <strong>live call capture</strong> — just the tip of the iceberg." },
+      { bot: "But here's what you're NOT seeing in this demo:<br><br><strong>📅 FlowMaster</strong> — Auto-booking, rescheduling, reminders<br><br><strong>🚨 LeakAlert</strong> — Emergency dispatch automation<br><br><strong>💼 PipelineIQ</strong> — Lead qualification at scale<br><br><strong>📱 ServiceVault</strong> — FAQ answering, DIY tips<br><br><strong>💰 InvoiceFlow</strong> — Auto-invoicing & payments<br><br><strong>⭐ ReviewRocket</strong> — Auto-collect reviews" },
+      { bot: "This demo is just <strong>CallGuard</strong> — the core. The foundation. Once you're capturing every call, we show you how to turn those calls into jobs, faster payment, better reviews, and repeat business." },
+      { bot: "Ready to see how it works for your plumbing business?" }
+    ]
+  }
+};
+
+function addMessage(text, isBot = true, isTyping = false) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${isBot ? 'bot' : 'user'}`;
+  
+  if (isTyping) {
+    msgDiv.innerHTML = '<div class="message-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+  } else {
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.innerHTML = text;
+    msgDiv.appendChild(bubble);
+  }
+  
+  document.getElementById('messages').appendChild(msgDiv);
+  document.getElementById('conversationView').scrollTop = document.getElementById('conversationView').scrollHeight;
+  return msgDiv;
+}
+
+function removeMessage(msgDiv) {
+  msgDiv.remove();
+}
+
+function skipToConversation() {
+  document.getElementById('incomingCallView').style.display = 'none';
+  document.getElementById('conversationView').style.display = 'flex';
+  document.getElementById('controls').style.display = 'flex';
+  document.getElementById('messages').innerHTML = '';
+  playConversation();
+}
+
+function playConversation() {
+  const scenario = scenarios[currentScenario];
+  let delay = 300;
+  
+  scenario.exchanges.forEach((exchange, index) => {
+    setTimeout(() => {
+      if (exchange.bot) {
+        const typing = addMessage('', true, true);
+        setTimeout(() => {
+          removeMessage(typing);
+          addMessage(exchange.bot, true);
+        }, 600);
+      } else if (exchange.user) {
+        addMessage(exchange.user, false);
+      } else if (exchange.captured) {
+        const typing = addMessage('', true, true);
+        setTimeout(() => {
+          removeMessage(typing);
+          addMessage(exchange.summary, true);
+          
+          setTimeout(() => {
+            const hint = document.createElement('div');
+            hint.className = 'hidden-features';
+            hint.innerHTML = '✨ This is just the <strong>taster.</strong> Ready to see the full system?';
+            document.getElementById('conversationView').appendChild(hint);
+          }, 800);
+        }, 1000);
+      }
+    }, delay);
+    delay += 2200;
+  });
+}
+
+function showScenario(scenario) {
+  currentScenario = scenario;
+  document.querySelectorAll('.control-button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  document.getElementById('messages').innerHTML = '';
+  const hint = document.querySelector('.hidden-features');
+  if (hint) hint.remove();
+  
+  playConversation();
+}
+
+function resetDemo() {
+  document.getElementById('conversationView').style.display = 'none';
+  document.getElementById('controls').style.display = 'none';
+  document.getElementById('incomingCallView').style.display = 'flex';
+  document.getElementById('callStatus').className = 'call-status';
+  document.getElementById('messages').innerHTML = '';
+}
+
+// Auto-start
+setTimeout(() => {
+  skipToConversation();
+}, 1500);
+</script>
+
+</body>
+</html>

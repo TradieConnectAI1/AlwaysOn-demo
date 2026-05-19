@@ -1,0 +1,18 @@
+{
+  "name": "callguard-demo",
+  "version": "1.0.0",
+  "description": "CallGuard - AI Receptionist Demo for Tradie Connect AI",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "start": "node -e \"require('http').createServer((req, res) => { const fs = require('fs'); res.writeHead(200, {'Content-Type': 'text/html'}); res.end(fs.readFileSync('./index.html')); }).listen(3000)\""
+  },
+  "keywords": [
+    "chatbot",
+    "demo",
+    "tradie",
+    "plumbing"
+  ],
+  "author": "Tradie Connect AI",
+  "license": "MIT"
+}
