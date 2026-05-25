@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Always On Demo - Tradie Connect AI</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap');
 
 :root {
   --navy: #1B3A6B;
@@ -49,7 +49,7 @@ html, body {
 }
 
 .brand-label {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2.5px;
@@ -59,14 +59,16 @@ html, body {
 }
 
 .header h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  font-size: 28px;
+  font-weight: 300;
   color: var(--navy);
-  line-height: 1.1;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 .header h1 span {
+  font-weight: 700;
   color: var(--orange);
 }
 
@@ -157,7 +159,7 @@ html, body {
 }
 
 .chat-header-name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.3px;
@@ -326,7 +328,62 @@ html, body {
   fill: white;
 }
 
-/* ── SCENARIO BUTTONS ── */
+/* ── SUMMARY CARD ── */
+.summary-card {
+  background: linear-gradient(135deg, #1B3A6B, #0f2547);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 4px 0;
+  width: 88%;
+  align-self: center;
+  animation: fadeUp 0.35s ease both;
+}
+
+.summary-header {
+  font-family: 'Nunito', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.summary-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 5px;
+  align-items: flex-start;
+}
+
+.summary-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #7eb8f7;
+  min-width: 70px;
+  flex-shrink: 0;
+}
+
+.summary-value {
+  font-size: 11px;
+  color: white;
+  line-height: 1.4;
+}
+
+.summary-footer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 10px;
+  color: #a8c4e8;
+  text-align: center;
+  font-style: italic;
+}
+
+
 .scenario-section {
   width: 100%;
   max-width: 360px;
@@ -334,7 +391,7 @@ html, body {
 }
 
 .scenario-label {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -355,7 +412,7 @@ html, body {
   border: 2px solid #dde3f0;
   background: white;
   border-radius: 12px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 11px;
   font-weight: 700;
   color: var(--navy);
@@ -399,7 +456,7 @@ html, body {
 .upsell-section.visible { display: block; }
 
 .upsell-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 13px;
   font-weight: 800;
   color: var(--navy);
@@ -436,7 +493,7 @@ html, body {
 .chip-info { flex: 1; }
 
 .chip-name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 12px;
   font-weight: 700;
   color: var(--navy);
@@ -456,7 +513,7 @@ html, body {
   color: white;
   border: none;
   border-radius: 12px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -615,6 +672,14 @@ const scenarios = {
     { role: 'customer', text: "Morning slot works." },
     { role: 'bot',  text: "Perfect, you're all booked in Dave! You'll receive a confirmation SMS shortly and the technician will give you a call 30 minutes before arrival. We'll have you sorted in no time! 😊" },
     { role: 'system', text: '✅ Job captured — no missed call, no lost booking' },
+    { role: 'summary', fields: [
+      { label: 'Customer', value: 'Dave' },
+      { label: 'Address', value: '14 Elm Street, Norwood' },
+      { label: 'Job Type', value: 'Hot water system — complete outage' },
+      { label: 'Urgency', value: 'Priority — same day' },
+      { label: 'Booking', value: 'Tomorrow, 8–10am' },
+      { label: 'Contact', value: 'Confirmation SMS sent to customer' },
+    ]},
   ],
   emergency: [
     { role: 'system', text: '🚨 2:47am — Emergency call received, Jess answers' },
@@ -627,6 +692,14 @@ const scenarios = {
     { role: 'bot',  text: "Thank you. I'm alerting our on-call technician right now — they'll be with you in approximately 45 minutes. You'll get an SMS shortly to confirm. Please try to stay calm, help is on the way. 💙" },
     { role: 'customer', text: "Thank goodness. Thank you!" },
     { role: 'system', text: '🚨 Emergency escalated to RushResponse — tech dispatched' },
+    { role: 'summary', fields: [
+      { label: 'Customer', value: 'Not captured — emergency call' },
+      { label: 'Address', value: '42 Prospect Road, Prospect' },
+      { label: 'Job Type', value: 'Burst pipe — water through ceiling' },
+      { label: 'Urgency', value: '🚨 Emergency — immediate dispatch' },
+      { label: 'ETA', value: 'Technician en route, ~45 mins' },
+      { label: 'Contact', value: '0412 555 888 — SMS confirmation sent' },
+    ]},
   ],
   quote: [
     { role: 'system', text: '📞 New enquiry — Jess qualifying the lead' },
@@ -640,6 +713,14 @@ const scenarios = {
     { role: 'customer', text: "Yes, Saturday morning if possible." },
     { role: 'bot',  text: "Saturday morning works perfectly! Can I grab your name and address to get that confirmed for you?" },
     { role: 'system', text: '✅ Lead qualified & converted — no sales call needed' },
+    { role: 'summary', fields: [
+      { label: 'Job Type', value: 'Toilet replacement — customer supplied' },
+      { label: 'Type', value: 'Standard toilet' },
+      { label: 'Quote', value: '$180–$250 labour' },
+      { label: 'Booking', value: 'Saturday morning' },
+      { label: 'Status', value: 'Awaiting name & address confirmation' },
+      { label: 'Action', value: 'Follow up to confirm booking details' },
+    ]},
   ],
   afterhours: [
     { role: 'system', text: '🌙 7:23pm — After-hours call, Jess answers' },
@@ -651,6 +732,14 @@ const scenarios = {
     { role: 'customer', text: "Perfect actually." },
     { role: 'bot',  text: "Wonderful! All booked in for you, Sarah. A confirmation SMS is on its way, and the team will pick this up first thing tomorrow morning. So sorry for the hassle with the drain — we'll have it flowing again in no time! 😊" },
     { role: 'system', text: '✅ After-hours booking saved — would have been a lost job' },
+    { role: 'summary', fields: [
+      { label: 'Customer', value: 'Sarah' },
+      { label: 'Suburb', value: 'Glenelg' },
+      { label: 'Job Type', value: 'Blocked drain — 2 days' },
+      { label: 'Urgency', value: 'Non-urgent' },
+      { label: 'Booking', value: 'Thursday, 8–10am' },
+      { label: 'Contact', value: 'Confirmation SMS sent to customer' },
+    ]},
   ],
 };
 
@@ -680,7 +769,7 @@ function runScenario(key, btn) {
       if (typing) typing.remove();
 
       // Add message
-      addMessage(step.role, step.text);
+      addMessage(step.role, step.text, step.fields);
       msgs.scrollTop = msgs.scrollHeight;
 
       // Add typing indicator before next bot message
@@ -712,7 +801,7 @@ function runScenario(key, btn) {
   });
 }
 
-function addMessage(role, text) {
+function addMessage(role, text, fields) {
   const msgs = document.getElementById('messages');
   const row = document.createElement('div');
   row.className = `msg-row ${role}`;
@@ -721,6 +810,18 @@ function addMessage(role, text) {
     row.innerHTML = `<div class="msg-avatar">⚡</div><div class="bubble bot">${text}</div>`;
   } else if (role === 'customer') {
     row.innerHTML = `<div class="bubble customer">${text}</div>`;
+  } else if (role === 'summary') {
+    const rows = fields.map(f => `
+      <div class="summary-row">
+        <div class="summary-label">${f.label}</div>
+        <div class="summary-value">${f.value}</div>
+      </div>`).join('');
+    row.innerHTML = `
+      <div class="summary-card">
+        <div class="summary-header">📋 Job Summary — Sent to Technician</div>
+        ${rows}
+        <div class="summary-footer">✅ This summary has been messaged through to your tradie for actioning</div>
+      </div>`;
   } else {
     row.innerHTML = `<div class="bubble system">${text}</div>`;
   }
@@ -733,3 +834,4 @@ runScenario('routine', document.getElementById('btn-routine'));
 </script>
 </body>
 </html>
+
